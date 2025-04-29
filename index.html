@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stack Implementation Using Linked List</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            padding: 25px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .canvas-container {
+            width: 100%;
+            margin: 25px 0;
+            display: flex;
+            justify-content: center;
+            border: 1px solid #e0e0e0;
+            background-color: #fafafa;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        canvas {
+            display: block;
+        }
+
+        .controls {
+            margin: 25px 0;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        input {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            flex-grow: 1;
+            font-size: 16px;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            outline: none;
+        }
+
+        button {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.15s, background-color 0.3s;
+            font-size: 16px;
+            font-weight: 500;
+            min-width: 90px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        button:active {
+            transform: scale(0.97);
+        }
+
+        #pushBtn {
+            background-color: #2ecc71;
+        }
+
+        #pushBtn:hover {
+            background-color: #24a75a;
+        }
+
+        #popBtn {
+            background-color: #e74c3c;
+        }
+
+        #popBtn:hover {
+            background-color: #c0392b;
+        }
+
+        #peekBtn {
+            background-color: #3498db;
+        }
+
+        #peekBtn:hover {
+            background-color: #2980b9;
+        }
+
+        #clearBtn {
+            background-color: #f39c12;
+        }
+
+        #clearBtn:hover {
+            background-color: #d35400;
+        }
+
+        .info {
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .status {
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: #2c3e50;
+            font-weight: 600;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .message {
+            font-size: 16px;
+            color: #e74c3c;
+            min-height: 24px;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        .explanation {
+            margin-top: 35px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+        }
+
+        .explanation h2 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .explanation p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        .explanation h3 {
+            margin: 20px 0 15px;
+            color: #2c3e50;
+        }
+
+        .explanation ul {
+            list-style-type: circle;
+            padding-left: 25px;
+        }
+
+        .explanation li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            .input-group {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Stack Implementation Using Linked List</h1>
+        
+        <div class="canvas-container">
+            <canvas id="stackCanvas" width="700" height="300"></canvas>
+        </div>
+        
+        <div class="controls">
+            <div class="input-group">
+                <input type="text" id="elementInput" placeholder="Enter a value">
+                <button id="pushBtn">Push</button>
+                <button id="popBtn">Pop</button>
+                <button id="peekBtn">Peek</button>
+                <button id="clearBtn">Clear Stack</button>
+            </div>
+        </div>
+        
+        <div class="info">
+            <div class="status" id="status">Stack is empty</div>
+            <div class="message" id="message"></div>
+        </div>
+        
+        <div class="explanation">
+            <h2>About Stack Data Structure (Linked List Implementation)</h2>
+            <p>A stack is a linear data structure that follows the Last In First Out (LIFO) principle. The element that is added last is the first one to be removed.</p>
+            <p>In this implementation, we use a linked list to store the stack elements. Each element is a node with a value and a reference to the next node.</p>
+            <h3>Operations:</h3>
+            <ul>
+                <li><strong>Push</strong>: Add a node to the top of the stack (beginning of the list)</li>
+                <li><strong>Pop</strong>: Remove the node from the top of the stack</li>
+                <li><strong>Peek</strong>: View the element at the top without removing it</li>
+            </ul>
+            <h3>Advantages of Linked List Implementation:</h3>
+            <ul>
+                <li>Dynamic size (no predefined limit)</li>
+                <li>Efficient memory utilization</li>
+                <li>No stack overflow unless memory is exhausted</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get canvas and container
+            const canvas = document.getElementById('stackCanvas');
+            const ctx = canvas.getContext('2d');
+            const canvasContainer = document.querySelector('.canvas-container');
+            
+            // Set high resolution canvas
+            function setupHighResolutionCanvas() {
+                // Get the device pixel ratio
+                const dpr = window.devicePixelRatio || 1;
+                
+                // Get the container's size
+                const rect = canvasContainer.getBoundingClientRect();
+                const displayWidth = rect.width;
+                const displayHeight = 300; // Keep the height as 300
+                
+                // Set the canvas size in CSS pixels
+                canvas.style.width = displayWidth + 'px';
+                canvas.style.height = displayHeight + 'px';
+                
+                // Set the canvas size in actual pixels (higher resolution)
+                canvas.width = Math.floor(displayWidth * dpr);
+                canvas.height = Math.floor(displayHeight * dpr);
+                
+                // Scale the context to ensure correct drawing operations
+                ctx.scale(dpr, dpr);
+                
+                // Enable image smoothing for text and shapes
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+            }
+            
+            // Call the setup function
+            setupHighResolutionCanvas();
+            
+            // Get DOM elements
+            const elementInput = document.getElementById('elementInput');
+            const pushBtn = document.getElementById('pushBtn');
+            const popBtn = document.getElementById('popBtn');
+            const peekBtn = document.getElementById('peekBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const statusEl = document.getElementById('status');
+            const messageEl = document.getElementById('message');
+            
+            // Calculate dimensions based on canvas size
+            const canvasWidth = parseInt(canvas.style.width);
+            
+            // Node configuration
+            const nodeConfig = {
+                width: 60,
+                height: 60,
+                horizontalGap: 40,
+                startX: 120,
+                startY: parseInt(canvas.style.height) / 2 - 30,
+                maxVisibleNodes: 6, // Maximum nodes to display before scrolling
+                animationSpeed: 15,
+            };
+            
+            // Node class for linked list implementation
+            class Node {
+                constructor(value) {
+                    this.value = value;
+                    this.next = null;
+                }
+            }
+            
+            // Stack implementation using linked list
+            const stack = {
+                top: null,
+                size: 0,
+                
+                isEmpty: function() {
+                    return this.top === null;
+                },
+                
+                push: function(value) {
+                    const newNode = new Node(value);
+                    newNode.next = this.top;
+                    this.top = newNode;
+                    this.size++;
+                    return true;
+                },
+                
+                pop: function() {
+                    if (this.isEmpty()) {
+                        return null;
+                    }
+                    const value = this.top.value;
+                    this.top = this.top.next;
+                    this.size--;
+                    return value;
+                },
+                
+                peek: function() {
+                    if (this.isEmpty()) {
+                        return null;
+                    }
+                    return this.top.value;
+                },
+                
+                clear: function() {
+                    this.top = null;
+                    this.size = 0;
+                }
+            };
+            
+            // Animation variables
+            let isAnimating = false;
+            let animationObj = null;
+            
+            // Initial render
+            draw();
+            updateStatus();
+            
+            // Handle window resize to maintain high resolution
+            window.addEventListener('resize', function() {
+                setupHighResolutionCanvas();
+                draw();
+            });
+            
+            // Event Listeners
+            pushBtn.addEventListener('click', handlePush);
+            popBtn.addEventListener('click', handlePop);
+            peekBtn.addEventListener('click', handlePeek);
+            clearBtn.addEventListener('click', handleClear);
+            elementInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handlePush();
+                }
+            });
+            
+            // Handle push operation
+            function handlePush() {
+                if (isAnimating) return;
+                
+                clearMessage();
+                const value = elementInput.value.trim();
+                
+                if (!value) {
+                    showMessage("Please enter a value to push");
+                    return;
+                }
+                
+                // Create animation for push
+                isAnimating = true;
+                animationObj = {
+                    type: 'push',
+                    value: value,
+                    x: nodeConfig.startX,
+                    y: nodeConfig.startY - 80,
+                    targetY: nodeConfig.startY,
+                    progress: 0,
+                    completed: false
+                };
+                
+                // Start animation
+                requestAnimationFrame(animate);
+                
+                // Push value to stack
+                stack.push(value);
+                
+                // Clear input after push
+                elementInput.value = '';
+                updateStatus();
+            }
+            
+            // Handle pop operation
+            function handlePop() {
+                if (isAnimating) return;
+                
+                clearMessage();
+                
+                if (stack.isEmpty()) {
+                    showMessage("Stack Underflow! Cannot pop from an empty stack.");
+                    return;
+                }
+                
+                const value = stack.top.value;
+                
+                // Create animation for pop
+                isAnimating = true;
+                animationObj = {
+                    type: 'pop',
+                    value: value,
+                    x: nodeConfig.startX,
+                    y: nodeConfig.startY,
+                    targetY: nodeConfig.startY - 80,
+                    progress: 0,
+                    completed: false
+                };
+                
+                // Start animation
+                requestAnimationFrame(animate);
+                
+                // Remove from stack
+                const popped = stack.pop();
+                updateStatus();
+                
+                // Show message after animation completes
+                setTimeout(() => {
+                    showMessage(`Popped value: ${popped}`);
+                }, 500);
+            }
+            
+            // Handle peek operation
+            function handlePeek() {
+                clearMessage();
+                
+                if (stack.isEmpty()) {
+                    showMessage("Stack is empty. Cannot peek.");
+                    return;
+                }
+                
+                const value = stack.peek();
+                showMessage(`Top value: ${value}`);
+                
+                // Highlight the top node
+                ctx.save();
+                ctx.fillStyle = 'rgba(255, 255, 0, 0.3)';
+                ctx.fillRect(
+                    nodeConfig.startX, 
+                    nodeConfig.startY, 
+                    nodeConfig.width, 
+                    nodeConfig.height
+                );
+                ctx.restore();
+                
+                // Draw top label
+                ctx.save();
+                ctx.fillStyle = '#e74c3c';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+                ctx.font = 'bold 16px Arial';
+                ctx.fillText('TOP', nodeConfig.startX + nodeConfig.width/2, nodeConfig.startY - 10);
+                ctx.restore();
+                
+                // Remove highlight after a delay
+                setTimeout(() => {
+                    draw();
+                    clearMessage();
+                }, 1500);
+            }
+            
+            // Handle clear operation
+            function handleClear() {
+                if (isAnimating) return;
+                
+                clearMessage();
+                
+                if (stack.isEmpty()) {
+                    showMessage("Stack is already empty.");
+                    return;
+                }
+                
+                // Create fade-out animation for all nodes
+                isAnimating = true;
+                animationObj = {
+                    type: 'clear',
+                    progress: 0,
+                    completed: false
+                };
+                
+                // Start animation
+                requestAnimationFrame(animate);
+                
+                // Clear stack data
+                stack.clear();
+                updateStatus();
+            }
+            
+            // Animation function
+            function animate() {
+                if (!animationObj) return;
+                
+                // Increment progress
+                animationObj.progress += 0.05;
+                
+                // Draw the current state
+                draw();
+                
+                // Handle animation completion
+                if (animationObj.progress >= 1) {
+                    if (!animationObj.completed) {
+                        animationObj.completed = true;
+                        // Final draw to ensure the completed state is shown
+                        draw();
+                        // Reset animation state
+                        setTimeout(() => {
+                            animationObj = null;
+                            isAnimating = false;
+                        }, 100);
+                    }
+                    return;
+                }
+                
+                if (animationObj.type === 'push') {
+                    // Animate node coming in
+                    const currentY = animationObj.y + (animationObj.targetY - animationObj.y) * animationObj.progress;
+                    
+                    // Draw the incoming node
+                    drawNode(animationObj.x, currentY, animationObj.value, true);
+                } else if (animationObj.type === 'pop') {
+                    // Animate node going out
+                    const currentY = animationObj.y + (animationObj.targetY - animationObj.y) * animationObj.progress;
+                    
+                    // Draw the outgoing node
+                    drawNode(animationObj.x, currentY, animationObj.value, false, true);
+                } else if (animationObj.type === 'clear') {
+                    // Fade out all nodes
+                    ctx.save();
+                    ctx.globalAlpha = 1 - animationObj.progress;
+                    drawAllNodes();
+                    ctx.restore();
+                }
+                
+                // Continue the animation
+                requestAnimationFrame(animate);
+            }
+            
+            // Draw a single node
+            function drawNode(x, y, value, isNew = false, isRemoving = false) {
+                // Draw node rectangle
+                ctx.fillStyle = isNew ? '#2ecc71' : (isRemoving ? '#e74c3c' : '#3498db');
+                ctx.fillRect(x, y, nodeConfig.width, nodeConfig.height);
+                
+                // Draw node border
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(x, y, nodeConfig.width, nodeConfig.height);
+                
+                // Draw node value
+                ctx.fillStyle = 'white';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.font = '16px Arial';
+                ctx.fillText(
+                    value, 
+                    x + nodeConfig.width/2, 
+                    y + nodeConfig.height/2
+                );
+                
+                // Draw next pointer section (right part of the node)
+                ctx.fillStyle = '#2c3e50';
+                ctx.fillRect(x + nodeConfig.width - 15, y, 15, nodeConfig.height);
+                
+                // Draw pointer value
+                ctx.fillStyle = 'white';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.font = '14px Arial';
+                ctx.fillText(
+                    '→', 
+                    x + nodeConfig.width - 7, 
+                    y + nodeConfig.height/2
+                );
+            }
+            
+            // Draw arrow between nodes
+            function drawArrow(fromX, fromY, toX, toY) {
+                ctx.strokeStyle = '#7f8c8d';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(fromX, fromY);
+                ctx.lineTo(toX, toY);
+                ctx.stroke();
+                
+                // Draw arrowhead
+                const arrowSize = 8;
+                const angle = Math.atan2(toY - fromY, toX - fromX);
+                
+                ctx.beginPath();
+                ctx.moveTo(toX, toY);
+                ctx.lineTo(
+                    toX - arrowSize * Math.cos(angle - Math.PI/6),
+                    toY - arrowSize * Math.sin(angle - Math.PI/6)
+                );
+                ctx.lineTo(
+                    toX - arrowSize * Math.cos(angle + Math.PI/6),
+                    toY - arrowSize * Math.sin(angle + Math.PI/6)
+                );
+                ctx.closePath();
+                ctx.fillStyle = '#7f8c8d';
+                ctx.fill();
+            }
+            
+            // Draw all nodes in the stack
+            function drawAllNodes() {
+                if (stack.isEmpty()) {
+                    return;
+                }
+                
+                let current = stack.top;
+                let count = 0;
+                let availableWidth = parseInt(canvas.style.width) - nodeConfig.startX - nodeConfig.width;
+                let maxNodes = Math.min(
+                    stack.size, 
+                    Math.floor(availableWidth / (nodeConfig.width + nodeConfig.horizontalGap)) + 1
+                );
+                
+                // Adjust if there are too many nodes
+                if (maxNodes < stack.size) {
+                    // Show beginning nodes
+                    let visibleNodes = Math.min(nodeConfig.maxVisibleNodes - 1, maxNodes - 1);
+                    
+                    // Draw visible nodes from the beginning
+                    while (current && count < visibleNodes) {
+                        const x = nodeConfig.startX + count * (nodeConfig.width + nodeConfig.horizontalGap);
+                        drawNode(x, nodeConfig.startY, current.value);
+                        
+                        // If there's a next node that will be rendered, draw arrow
+                        if (count < visibleNodes - 1) {
+                            const fromX = x + nodeConfig.width;
+                            const fromY = nodeConfig.startY + nodeConfig.height/2;
+                            const toX = x + nodeConfig.width + nodeConfig.horizontalGap;
+                            const toY = fromY;
+                            
+                            drawArrow(fromX, fromY, toX, toY);
+                        }
+                        
+                        current = current.next;
+                        count++;
+                    }
+                    
+                    // Draw ellipsis to indicate more nodes
+                    const ellipsisX = nodeConfig.startX + visibleNodes * (nodeConfig.width + nodeConfig.horizontalGap);
+                    ctx.fillStyle = '#95a5a6';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.font = 'bold 24px Arial';
+                    ctx.fillText('...', ellipsisX + nodeConfig.horizontalGap/2, nodeConfig.startY + nodeConfig.height/2);
+                    
+                    // Draw NULL pointer at the end
+                    const nullX = ellipsisX + nodeConfig.horizontalGap;
+                    drawNullPointer(nullX, nodeConfig.startY);
+                } else {
+                    // Draw all nodes if they fit
+                    while (current) {
+                        const x = nodeConfig.startX + count * (nodeConfig.width + nodeConfig.horizontalGap);
+                        drawNode(x, nodeConfig.startY, current.value);
+                        
+                        if (current.next) {
+                            // Draw arrow to next node
+                            const fromX = x + nodeConfig.width;
+                            const fromY = nodeConfig.startY + nodeConfig.height/2;
+                            const toX = x + nodeConfig.width + nodeConfig.horizontalGap;
+                            const toY = fromY;
+                            
+                            drawArrow(fromX, fromY, toX, toY);
+                        } else {
+                            // Draw NULL pointer for the last node
+                            drawNullPointer(x + nodeConfig.width + nodeConfig.horizontalGap, nodeConfig.startY);
+                        }
+                        
+                        current = current.next;
+                        count++;
+                    }
+                }
+            }
+            
+            // Draw NULL pointer
+            function drawNullPointer(x, y) {
+                // Draw NULL text in a small box
+                ctx.fillStyle = '#95a5a6';
+                ctx.fillRect(x, y + nodeConfig.height/2 - 15, 40, 30);
+                ctx.strokeStyle = '#7f8c8d';
+                ctx.strokeRect(x, y + nodeConfig.height/2 - 15, 40, 30);
+                
+                ctx.fillStyle = 'white';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.font = '14px Arial';
+                ctx.fillText(
+                    'NULL', 
+                    x + 20, 
+                    y + nodeConfig.height/2
+                );
+            }
+            
+            // Draw the stack
+            function draw() {
+                // Clear canvas
+                ctx.clearRect(0, 0, parseInt(canvas.style.width), parseInt(canvas.style.height));
+                
+                // Draw title
+                ctx.fillStyle = '#2c3e50';
+                ctx.textAlign = 'center';
+                ctx.font = 'bold 18px Arial';
+                ctx.fillText('Stack Linked List Implementation', parseInt(canvas.style.width)/2, 30);
+                
+                // Draw all nodes
+                drawAllNodes();
+                
+                // Draw top pointer if stack is not empty
+                if (!stack.isEmpty() && !animationObj?.type === 'clear') {
+                    // Draw TOP label pointing to the first node
+                    ctx.save();
+                    ctx.fillStyle = '#e74c3c';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'bottom';
+                    ctx.font = 'bold 16px Arial';
+                    ctx.fillText('TOP', nodeConfig.startX + nodeConfig.width/2, nodeConfig.startY - 10);
+                    
+                    // Draw arrow
+                    ctx.beginPath();
+                    ctx.moveTo(nodeConfig.startX + nodeConfig.width/2, nodeConfig.startY - 25);
+                    ctx.lineTo(nodeConfig.startX + nodeConfig.width/2, nodeConfig.startY - 5);
+                    ctx.strokeStyle = '#e74c3c';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    // Draw arrowhead
+                    ctx.beginPath();
+                    ctx.moveTo(nodeConfig.startX + nodeConfig.width/2, nodeConfig.startY);
+                    ctx.lineTo(nodeConfig.startX + nodeConfig.width/2 - 5, nodeConfig.startY - 10);
+                    ctx.lineTo(nodeConfig.startX + nodeConfig.width/2 + 5, nodeConfig.startY - 10);
+                    ctx.closePath();
+                    ctx.fillStyle = '#e74c3c';
+                    ctx.fill();
+                    ctx.restore();
+                } else if (stack.isEmpty()) {
+                    // Draw empty stack indicator
+                    ctx.save();
+                    ctx.fillStyle = '#95a5a6';
+                    ctx.textAlign = 'center';
+                    ctx.font = 'italic 16px Arial';
+                    ctx.fillText('Empty Stack (TOP = NULL)', nodeConfig.startX + nodeConfig.width/2, nodeConfig.startY + nodeConfig.height/2);
+                    ctx.restore();
+                }
+                
+                // Draw legend
+                ctx.fillStyle = '#34495e';
+                ctx.textAlign = 'left';
+                ctx.font = '14px Arial';
+                ctx.fillText('LIFO: Last In, First Out', nodeConfig.startX, nodeConfig.startY + nodeConfig.height + 45);
+            }
+            
+            // Update status display
+            function updateStatus() {
+                statusEl.textContent = `Stack is ${stack.isEmpty() ? 'empty' : 'not empty'}. Size = ${stack.size}`;
+            }
+            
+            // Show message
+            function showMessage(msg) {
+                messageEl.textContent = msg;
+                messageEl.style.opacity = 1;
+            }
+            
+            // Clear message
+            function clearMessage() {
+                messageEl.textContent = '';
+                messageEl.style.opacity = 0;
+            }
+        });
+    </script>
+</body>
+</html>
